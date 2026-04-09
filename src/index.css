@@ -1,0 +1,94 @@
+﻿:root {
+  --bg-primary: #f0f4f8;
+  --bg-card: #ffffff;
+  --text-primary: #2d3748;
+  --text-secondary: #718096;
+  --accent: #3182ce;
+  --border-radius: 12px;
+}
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+.app-container {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.settings-panel {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+button, select {
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  border: 1px solid #cbd5e0;
+  background: white;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+button:hover {
+  background: #edf2f7;
+}
+
+.button-primary {
+  background: var(--accent);
+  color: white;
+  border: none;
+}
+
+.button-primary:hover {
+  background: #2b6cb0;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.card {
+  background: var(--bg-card);
+  border-radius: var(--border-radius);
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+  transition: transform 0.2s, box-shadow 0.2s;
+  display: flex;
+  flex-direction: column;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+}
+
+.card-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin: 0 0 1rem 0;
+  color: var(--text-primary);
+}
+
+.card-meta {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
