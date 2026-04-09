@@ -1,5 +1,10 @@
-﻿const { app, BrowserWindow } = require('electron');
+﻿const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
+const { initDb } = require('./db');
+const { fetchRSS } = require('./scraper');
+
+const dbDir = path.join(app.getPath('userData'), 'study_aboard_data');
+const db = initDb(dbDir);
 
 function createWindow() {
   const mainWindow = new BrowserWindow({
@@ -22,6 +27,19 @@ function createWindow() {
 
 app.whenReady().then(() => {
   createWindow();
+
+  ipcMain.handle('get-articles', () => {
+    return db.prepare('SELECT * FROM articles ORDER BY created_at DESC LIMIT 50').all();
+  });
+
+  ipcMain.handle('force-scrape', async (event, url) => {
+      try {
+         await fetchRSS(url, db);
+         return { success: true };
+      } catch(err) {
+         return { success: false, error: err.message };
+      }
+  });
 
   app.on('activate', function () {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();
