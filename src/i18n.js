@@ -4,10 +4,7 @@ import { initReactI18next } from "react-i18next";
 const resources = {
   en: {
     translation: {
-      "app_title": "Study-abroad News",
-      "dashboard_title": "Dashboard",
-      "settings": "Settings",
-      "language": "Language",
+      "app_title": "Study-abroad Assistant",
       "force_refresh": "Refresh Data",
       "loading": "Loading articles...",
       "no_articles": "No articles found. Try refreshing data."
@@ -15,10 +12,7 @@ const resources = {
   },
   zh: {
     translation: {
-      "app_title": "留学新闻助手",
-      "dashboard_title": "主控制台",
-      "settings": "设置",
-      "language": "语言切换",
+      "app_title": "留学小助手",
       "force_refresh": "立即刷新获取新数据",
       "loading": "正在加载新闻...",
       "no_articles": "暂无数据，请尝试刷新。"

@@ -20,31 +20,27 @@ function App() {
 
   useEffect(() => {
     loadArticles();
-  }, []);
+    if (window.electronAPI && window.electronAPI.onLanguageChange) {
+      window.electronAPI.onLanguageChange((lang) => {
+        i18n.changeLanguage(lang);
+      });
+    }
+  }, [i18n]);
 
   const handleRefresh = async () => {
     setLoading(true);
     if (window.electronAPI) {
-      // Fetch an example safe RSS feed for testing (e.g. reddit/r/studyabroad or a university RSS)
       await window.electronAPI.forceScrape('https://www.studyinthestates.dhs.gov/blog.xml');
       await loadArticles();
     }
     setLoading(false);
   };
 
-  const changeLanguage = (e) => {
-    i18n.changeLanguage(e.target.value);
-  };
-
   return (
     <div className="app-container">
-      <header className="header">
-        <h1>{t('app_title')} - {t('dashboard_title')}</h1>
+      <header className="header" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <h1 style={{ marginBottom: '1.5rem', fontSize: '2.5rem' }}>{t('app_title')}</h1>
         <div className="settings-panel">
-          <select onChange={changeLanguage} value={i18n.language}>
-            <option value="zh">中文 (Chinese)</option>
-            <option value="en">English</option>
-          </select>
           <button className="button-primary" onClick={handleRefresh} disabled={loading}>
             {loading ? '...' : t('force_refresh')}
           </button>
@@ -52,7 +48,7 @@ function App() {
       </header>
 
       <main>
-        {loading && <p>{t('loading')}</p>}
+        {loading && <p style={{textAlign: 'center'}}>{t('loading')}</p>}
         <DashboardGrid articles={articles} />
       </main>
     </div>
