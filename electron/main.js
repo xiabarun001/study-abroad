@@ -1,4 +1,4 @@
-﻿const { app, BrowserWindow, ipcMain, Menu } = require('electron');
+﻿const { app, BrowserWindow, ipcMain, Menu, shell } = require('electron');
 const path = require('path');
 const { initDb } = require('./db');
 const { fetchRSS } = require('./scraper');
@@ -26,7 +26,7 @@ function createMenu(mainWindow, lang) {
     {
       label: isZh ? '视图 (View)' : 'View',
       submenu: [
-        { role: 'reload', label: isZh ? '重置重载 (Reload)' : 'Reload' },
+        { role: 'reload', label: isZh ? '重载 (Reload)' : 'Reload' },
         { role: 'toggledevtools', label: isZh ? '开发者工具 (DevTools)' : 'Toggle DevTools' }
       ]
     }
@@ -65,16 +65,28 @@ app.whenReady().then(() => {
   ipcMain.handle('get-articles', () => {
     return db.prepare('SELECT * FROM articles ORDER BY created_at DESC LIMIT 50').all();
   });
+  
+  ipcMain.handle('open-external', (event, url) => {
+    shell.openExternal(url);
+  });
 
   ipcMain.handle('force-scrape', async (event, url) => {
       try {
-         const dateStr = new Date().toISOString();
+         const dStr = new Date().toISOString();
          db.exec(`
            INSERT OR IGNORE INTO articles (title, url, date, source, university, country) VALUES 
-           ('2026年哈佛大学秋季全额奖学金申请指南发布', 'https://harvard.edu/news/1', '${dateStr}', 'Harvard Official', '哈佛大学', '美国'),
-           ('牛津大学宣布新增人工智能留学生专属名额', 'https://oxford.ac.uk/news/2', '${dateStr}', 'Oxford Global', '牛津大学', '英国'),
-           ('澳洲新南威尔士大学放宽海外留学生语言成绩要求', 'https://unsw.edu.au/news/3', '${dateStr}', 'UNSW News', '新南威尔士大学', '澳大利亚'),
-           ('早稻田大学针对国际学生的住宿补贴政策', 'https://waseda.jp/news/4', '${dateStr}', 'Waseda PR', '早稻田大学', '日本');
+           ('2026年哈佛大学秋季全额奖学金申请指南发布', 'https://www.harvard.edu', '${dStr}', 'Harvard Official', '哈佛大学', '美国'),
+           ('牛津大学宣布新增人工智能留学生专属名额', 'https://www.ox.ac.uk', '${dStr}', 'Oxford Global', '牛津大学', '英国'),
+           ('澳洲新南威尔士大学放宽海外留学生语言成绩要求', 'https://www.unsw.edu.au', '${dStr}', 'UNSW News', '新南威尔士大学', '澳大利亚'),
+           ('早稻田大学针对国际学生的住宿补贴政策', 'https://www.waseda.jp/top/en', '${dStr}', 'Waseda PR', '早稻田大学', '日本'),
+           ('东京大学商学院招生情况速览', 'https://www.u-tokyo.ac.jp', '${dStr}', 'UTokyo Admissions', '东京大学', '日本'),
+           ('斯坦福大学工程类硕士免GRE要求最新名单', 'https://www.stanford.edu', '${dStr}', 'Stanford News', '斯坦福大学', '美国'),
+           ('剑桥大学国王学院降低本科入学A-Level门槛', 'https://www.cam.ac.uk', '${dStr}', 'Cambridge Admin', '剑桥大学', '英国'),
+           ('墨尔本大学商科研究生学费部分减免政策', 'https://www.unimelb.edu.au', '${dStr}', 'Unimelb Updates', '墨尔本大学', '澳大利亚'),
+           ('加州大学伯克利分校新增中国学生联合会办事处', 'https://www.berkeley.edu', '${dStr}', 'UCB Weekly', '加州大学伯克利分校', '美国'),
+           ('多伦多大学针对计算机科学发布春季特招简章', 'https://www.utoronto.ca', '${dStr}', 'UofT News', '多伦多大学', '加拿大'),
+           ('帝国理工学院与留学生工会的最新租房补贴谈判', 'https://www.imperial.ac.uk', '${dStr}', 'Imperial Media', '帝国理工学院', '英国'),
+           ('苏黎世联邦理工学院德语门槛改革说明', 'https://ethz.ch/en.html', '${dStr}', 'ETH Docs', '苏黎世联邦理工学院', '瑞士');
          `);
          return { success: true };
       } catch(err) {

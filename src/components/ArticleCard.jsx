@@ -2,8 +2,11 @@
 
 function ArticleCard({ entry }) {
   const handleClick = () => {
-    // Open in default browser or handle within electron
-    window.open(entry.url, '_blank', 'nodeIntegration=no');
+    if (window.electronAPI && window.electronAPI.openExternal) {
+      window.electronAPI.openExternal(entry.url);
+    } else {
+      window.open(entry.url, '_blank');
+    }
   };
 
   return (
