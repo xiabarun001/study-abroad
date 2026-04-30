@@ -1,7 +1,9 @@
-﻿const { app, BrowserWindow, ipcMain, Menu, shell } = require('electron');
+const { app, BrowserWindow, ipcMain, Menu, shell } = require('electron');
 const path = require('path');
 const { initDb } = require('./db');
 const { fetchRSS } = require('./scraper');
+const { extractProgramData } = require('./main/scraper');
+const { getAiRecommendation } = require('./main/ai_advisor');
 
 const dbDir = path.join(app.getPath('userData'), 'study_aboard_data');
 const db = initDb(dbDir);
@@ -68,6 +70,14 @@ app.whenReady().then(() => {
   
   ipcMain.handle('open-external', (event, url) => {
     shell.openExternal(url);
+  });
+
+  ipcMain.handle('scrape-program', async (event, html) => {
+    return extractProgramData(html);
+  });
+
+  ipcMain.handle('get-ai-recommendation', async (event, profile, programs) => {
+    return await getAiRecommendation(profile, programs);
   });
 
   ipcMain.handle('force-scrape', async (event, url) => {
