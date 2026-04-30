@@ -1,4 +1,4 @@
-﻿const { initDb } = require('../electron/db');
+const { initDb } = require('../electron/db');
 const fs = require('fs');
 const path = require('path');
 

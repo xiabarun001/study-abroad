@@ -1,9 +1,9 @@
-﻿const { app, BrowserWindow, ipcMain, Menu, shell } = require('electron');
+const { app, BrowserWindow, ipcMain, Menu, shell } = require('electron');
 const path = require('path');
 const { initDb } = require('./db');
 const { fetchRSS } = require('./scraper');
 
-const dbDir = path.join(app.getPath('userData'), 'study_aboard_data');
+const dbDir = path.join(app.getPath('userData'), 'study_abroad_data');
 const db = initDb(dbDir);
 
 function createMenu(mainWindow, lang) {
@@ -102,3 +102,4 @@ app.whenReady().then(() => {
 app.on('window-all-closed', function () {
   if (process.platform !== 'darwin') app.quit();
 });
+

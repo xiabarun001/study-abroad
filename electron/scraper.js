@@ -1,4 +1,4 @@
-﻿const Parser = require('rss-parser');
+const Parser = require('rss-parser');
 const cheerio = require('cheerio');
 
 const parser = new Parser();

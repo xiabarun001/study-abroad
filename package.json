@@ -1,5 +1,5 @@
 {
-    "name": "study-aboard",
+    "name": "study-abroad",
     "version": "1.0.0",
     "description": "",
     "main": "electron/main.js",
@@ -36,3 +36,4 @@
         "wait-on": "^9.0.4"
     }
 }
+
