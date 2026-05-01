@@ -1,25 +1,37 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import DashboardGrid from './components/DashboardGrid';
+import { ProgramList } from './features/catalog/ProgramList';
+import { AiAdvisorPanel } from './features/advisor/AiAdvisorPanel';
 
 function App() {
   const { t, i18n } = useTranslation();
-  const [articles, setArticles] = useState([]);
+  const [programs, setPrograms] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [browserOpen, setBrowserOpen] = useState(false);
 
-  const loadArticles = async () => {
-    if (window.electronAPI) {
-      try {
-        const data = await window.electronAPI.getArticles();
-        setArticles(data || []);
-      } catch(err) {
-        console.error("Error loading articles", err);
-      }
-    }
-  };
-
+  // Load initial mock data
   useEffect(() => {
-    loadArticles();
+    setPrograms([
+      {
+        id: '1',
+        title: 'MS in Computer Science',
+        description: 'Stanford University. Deadline: Dec 15. Requires GRE.',
+        url: 'https://cs.stanford.edu/admissions'
+      },
+      {
+        id: '2',
+        title: 'Master of Data Science',
+        description: 'UC Berkeley. Deadline: Jan 10. No GRE required for 2026.',
+        url: 'https://datascience.berkeley.edu'
+      },
+      {
+        id: '3',
+        title: 'MSc Artificial Intelligence',
+        description: 'Imperial College London. Deadline: Rolling. High GPA required.',
+        url: 'https://www.imperial.ac.uk/computing'
+      }
+    ]);
+
     if (window.electronAPI && window.electronAPI.onLanguageChange) {
       window.electronAPI.onLanguageChange((lang) => {
         i18n.changeLanguage(lang);
@@ -27,29 +39,75 @@ function App() {
     }
   }, [i18n]);
 
-  const handleRefresh = async () => {
+  const handleTestScrape = async () => {
     setLoading(true);
     if (window.electronAPI) {
-      await window.electronAPI.forceScrape('https://www.studyinthestates.dhs.gov/blog.xml');
-      await loadArticles();
+      try {
+        const dummyHtml = `
+          <html><body>
+            <h1>Master of Design Engineering</h1>
+            <p>Harvard University. A collaborative degree between GSD and SEAS.</p>
+            <p>Deadline: January 5, 2027.</p>
+          </body></html>
+        `;
+        const newProgram = await window.electronAPI.scrapeProgram(dummyHtml);
+        
+        setPrograms(prev => [{
+          id: Date.now().toString(),
+          title: newProgram.title,
+          description: newProgram.description,
+          url: 'https://mde.harvard.edu'
+        }, ...prev]);
+        
+      } catch(err) {
+        console.error("Scrape failed:", err);
+      }
     }
     setLoading(false);
   };
 
+  const handleOpenExternal = async (url) => {
+    setBrowserOpen(true);
+    if (window.electronAPI) {
+      await window.electronAPI.openExternal(url);
+    }
+  };
+
+  const handleCloseExternal = async () => {
+    setBrowserOpen(false);
+    if (window.electronAPI && window.electronAPI.closeExternal) {
+      await window.electronAPI.closeExternal();
+    }
+  };
+
   return (
     <div className="app-container">
-      <header className="header" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        <h1 style={{ marginBottom: '1.5rem', fontSize: '2.5rem' }}>{t('app_title')}</h1>
+      <header className="header">
+        <h1>{t('app_title') || 'Study Abroad Compass'}</h1>
         <div className="settings-panel">
-          <button className="button-primary" onClick={handleRefresh} disabled={loading}>
-            {loading ? '...' : t('force_refresh')}
-          </button>
+          {browserOpen ? (
+            <button className="button-glow" onClick={handleCloseExternal} style={{ background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)' }}>
+              ← Back to App
+            </button>
+          ) : (
+            <button className="button-glow" onClick={handleTestScrape} disabled={loading}>
+              {loading ? 'Scraping...' : 'Test Local Scrape'}
+            </button>
+          )}
         </div>
       </header>
 
-      <main>
-        {loading && <p style={{textAlign: 'center'}}>{t('loading')}</p>}
-        <DashboardGrid articles={articles} />
+      <main className="main-layout" style={{ opacity: browserOpen ? 0.3 : 1, pointerEvents: browserOpen ? 'none' : 'auto', transition: 'opacity 0.3s' }}>
+        <section className="glass-panel catalog-section animate-fade-in" style={{ animationDelay: '0.1s' }}>
+          <h2 className="section-title">Program Catalog</h2>
+          <div style={{ overflowY: 'auto', flex: 1, paddingRight: '10px' }}>
+             <ProgramList programs={programs} onApply={handleOpenExternal} />
+          </div>
+        </section>
+        
+        <section className="glass-panel advisor-section animate-fade-in" style={{ animationDelay: '0.2s' }}>
+          <AiAdvisorPanel programs={programs} />
+        </section>
       </main>
     </div>
   );

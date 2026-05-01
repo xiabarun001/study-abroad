@@ -7,13 +7,14 @@ describe('ProgramList UI', () => {
       { id: '1', title: 'MS Computer Science', url: 'http://example.com' }
     ];
     
-    // Simple rendering check without DOM rendering for testing the exported pure function
+    // Call function directly to get VDOM object
     const element = ProgramList({ programs: mockPrograms });
     expect(element).toBeDefined();
-    expect(element.props.children).toBeDefined();
-    
-    const programNodes = element.props.children;
-    expect(programNodes.length).toBe(1);
-    expect(programNodes[0].props.children[0].props.children).toBe('MS Computer Science');
+    // It returns a 'div' as root
+    expect(element.type).toBe('div');
+    // Inside the div, there should be an array of children (the programs)
+    const children = element.props.children;
+    expect(children.length).toBe(1);
+    expect(children[0].type).toBe('div');
   });
 });

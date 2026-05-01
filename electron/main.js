@@ -4,6 +4,9 @@ const { initDb } = require('./db');
 const { fetchRSS } = require('./scraper');
 const { extractProgramData } = require('./main/scraper');
 const { getAiRecommendation } = require('./main/ai_advisor');
+const { createBrowserView, closeBrowserView } = require('./main/webview');
+
+let mainWindowInstance = null;
 
 const dbDir = path.join(app.getPath('userData'), 'study_abroad_data');
 const db = initDb(dbDir);
@@ -52,6 +55,8 @@ function createWindow() {
     }
   });
 
+  mainWindowInstance = mainWindow;
+
   createMenu(mainWindow, 'zh');
 
   if (process.env.VITE_DEV_SERVER_URL) {
@@ -69,7 +74,15 @@ app.whenReady().then(() => {
   });
   
   ipcMain.handle('open-external', (event, url) => {
-    shell.openExternal(url);
+    if (mainWindowInstance) {
+      createBrowserView(mainWindowInstance, url);
+    }
+  });
+
+  ipcMain.handle('close-external', () => {
+    if (mainWindowInstance) {
+      closeBrowserView(mainWindowInstance);
+    }
   });
 
   ipcMain.handle('scrape-program', async (event, html) => {
