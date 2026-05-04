@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ProgramList } from './features/catalog/ProgramList';
 import { AiAdvisorPanel } from './features/advisor/AiAdvisorPanel';
+import { supabase } from './shared/db/supabase';
 
 function App() {
   const { t, i18n } = useTranslation();
@@ -9,28 +10,23 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [browserOpen, setBrowserOpen] = useState(false);
 
-  // Load initial mock data
+  // Fetch data from Supabase
+  const fetchPrograms = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('programs')
+        .select('*')
+        .order('created_at', { ascending: false });
+        
+      if (error) throw error;
+      if (data) setPrograms(data);
+    } catch (error) {
+      console.error('Error fetching programs:', error.message);
+    }
+  };
+
   useEffect(() => {
-    setPrograms([
-      {
-        id: '1',
-        title: 'MS in Computer Science',
-        description: 'Stanford University. Deadline: Dec 15. Requires GRE.',
-        url: 'https://cs.stanford.edu/admissions'
-      },
-      {
-        id: '2',
-        title: 'Master of Data Science',
-        description: 'UC Berkeley. Deadline: Jan 10. No GRE required for 2026.',
-        url: 'https://datascience.berkeley.edu'
-      },
-      {
-        id: '3',
-        title: 'MSc Artificial Intelligence',
-        description: 'Imperial College London. Deadline: Rolling. High GPA required.',
-        url: 'https://www.imperial.ac.uk/computing'
-      }
-    ]);
+    fetchPrograms();
 
     if (window.electronAPI && window.electronAPI.onLanguageChange) {
       window.electronAPI.onLanguageChange((lang) => {
@@ -52,12 +48,21 @@ function App() {
         `;
         const newProgram = await window.electronAPI.scrapeProgram(dummyHtml);
         
-        setPrograms(prev => [{
-          id: Date.now().toString(),
-          title: newProgram.title,
-          description: newProgram.description,
-          url: 'https://mde.harvard.edu'
-        }, ...prev]);
+        // Insert into Supabase
+        const { error } = await supabase
+          .from('programs')
+          .insert([
+            {
+              title: newProgram.title,
+              description: newProgram.description,
+              url: 'https://mde.harvard.edu'
+            }
+          ]);
+          
+        if (error) throw error;
+        
+        // Refresh the list from the cloud
+        await fetchPrograms();
         
       } catch(err) {
         console.error("Scrape failed:", err);
