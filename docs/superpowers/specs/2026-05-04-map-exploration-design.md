@@ -1,41 +1,41 @@
-# Design Spec: Horizon Ethos Map Exploration
+# 设计规范：寰宇之境 - 艺术地图探索
 
-## 1. Overview
-This design specification details the transformation of the Study Abroad Application frontend from a static dual-column view into a multi-page routing application. The core feature is integrating the Stitch MCP "寰宇之境 - 艺术地图探索" map UI as the primary exploration portal.
+## 1. 概述
+本设计规范详细说明了将“留学通”应用前端从静态双栏视图向多页面路由应用改造的过程。核心功能是将 Stitch MCP 中的“寰宇之境 - 艺术地图探索”地图 UI 整合为主要的探索门户页面。
 
-## 2. Architecture & Tech Stack Updates
-- **CSS Framework**: Integrate **Tailwind CSS** into the existing Vite build pipeline. 
-  - Add standard `tailwind.config.js` and `postcss.config.js`.
-  - Extract and inject custom color variables provided by the Stitch metadata into the Tailwind configuration.
-- **Routing**: Introduce **`react-router-dom`** for client-side routing using `HashRouter` (best practice for Electron apps).
+## 2. 架构与技术栈更新
+- **CSS 框架**：将 **Tailwind CSS** 集成到现有的 Vite 构建流中。
+  - 添加标准的 `tailwind.config.js` 和 `postcss.config.js`。
+  - 提取 Stitch 元数据中提供的自定义颜色变量，并注入到 Tailwind 配置中。
+- **路由控制**：引入 **`react-router-dom`** 进行客户端路由，使用 `HashRouter`（Electron 应用的最佳实践）。
 
-## 3. UI Components & Layouts
+## 3. UI 组件与布局拆分
 
 ### 3.1. `MapPage.jsx`
-- **Purpose**: The new default route (`/`). A visually stunning, interactive map interface allowing users to explore programs by continent.
-- **Implementation**:
-  - Convert the Stitch HTML code into a clean, reusable React component.
-  - Implement interactive clickable areas for each continent marker.
-  - Retain the floating UI elements (AI Assistant preview, quick stats footer).
+- **用途**：新的默认主页路由 (`/`)。一个极具视觉冲击力、高互动的地图界面，允许用户按大洲探索项目。
+- **实现细节**：
+  - 将 Stitch 提供的 HTML 静态代码转换为干净、可复用的 React 组件。
+  - 为每个大洲图标实现可点击的交互区域。
+  - 保留并接入悬浮 UI 元素（如 AI 助手预览、底部统计数据栏）。
 
 ### 3.2. `ContinentPage.jsx`
-- **Purpose**: A dedicated view for a specific continent (route `/continent/:continentId`).
-- **Implementation**:
-  - Re-use the existing dual-column layout (left: `ProgramList`, right: `AiAdvisorPanel`).
-  - Add a "Back to Global Map" floating button in the header or top-left corner to return to the `MapPage`.
+- **用途**：针对特定大洲的详情视图 (路由为 `/continent/:continentId`)。
+- **实现细节**：
+  - 复用现有的双栏布局（左侧：`ProgramList` 项目列表，右侧：`AiAdvisorPanel` AI 顾问面板）。
+  - 在头部或左上角增加一个“返回全局地图”的悬浮按钮，用于一键返回 `MapPage`。
 
-## 4. Data Flow
-1. **Map Interaction**: Clicking a continent marker (e.g., North America) on the `MapPage` pushes a new route (`/continent/north-america`) to the router history.
-2. **Data Fetching**: 
-   - Currently, `ContinentPage` will continue to fetch the global list from Supabase. 
-   - Future enhancement: Pass the `continentId` to the Supabase fetch query to filter results dynamically.
+## 4. 数据流设计
+1. **地图交互**：在 `MapPage` 上点击一个大洲标记（例如北美洲），将一个新的路由路径（`/continent/north-america`）推入路由历史。
+2. **数据获取**：
+   - 目前阶段，`ContinentPage` 将继续从 Supabase 获取全局项目列表。
+   - 未来增强功能：将 `continentId` 传递给 Supabase 查询接口，实现动态筛选。
 
-## 5. Error Handling & Edge Cases
-- **Missing Routes**: Implement a basic catch-all route (`*`) that redirects back to the main `MapPage` if an invalid URL is triggered.
-- **Tailwind Conflicts**: Ensure Tailwind's preflight resets do not destructively break the existing `index.css` vanilla styles used in the `ContinentPage`.
+## 5. 错误处理与边缘情况
+- **未命中路由**：实现一个基础的捕获所有无效 URL 的路由（`*`），当触发无效链接时自动重定向回主页 `MapPage`。
+- **Tailwind 样式冲突**：确保 Tailwind 的样式重置（Preflight）不会破坏 `ContinentPage` 中现有的基于 `index.css` 的原生样式。
 
-## 6. Verification
-- `npm run dev` builds successfully with PostCSS/Tailwind.
-- Map renders with correct styles and fonts.
-- Clicking a continent navigates to the list view without page reload.
-- The back button returns the user to the map view instantly.
+## 6. 验证计划
+- 确认带有 PostCSS/Tailwind 的项目能够通过 `npm run dev` 成功构建。
+- 地图页面渲染正常，包含正确的样式和字体。
+- 点击大洲标记可无缝导航到列表视图，无需页面重载。
+- 点击返回按钮可瞬间退回地图视图。
