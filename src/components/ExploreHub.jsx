@@ -1,6 +1,8 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export function ExploreHub() {
+  const navigate = useNavigate();
   return (
     <div className="w-full h-full bg-slate-50 p-8 overflow-y-auto">
       <div className="max-w-6xl mx-auto">
@@ -22,7 +24,11 @@ export function ExploreHub() {
         {/* Cards Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {[1, 2, 3, 4, 5, 6, 7, 8].map(i => (
-            <div key={i} className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md hover:-translate-y-1 transition-all cursor-pointer">
+            <div 
+              key={i} 
+              onClick={() => navigate(`/university/${i}`)}
+              className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md hover:-translate-y-1 transition-all cursor-pointer"
+            >
               <div className="w-12 h-12 bg-blue-50 rounded-full mb-4 flex items-center justify-center text-blue-600 font-bold border border-blue-100">
                 U{i}
               </div>

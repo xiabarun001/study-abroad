@@ -1,6 +1,8 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export function ContinentDrawer({ continentId, onClose }) {
+  const navigate = useNavigate();
   if (!continentId) return null;
 
   return (
@@ -24,12 +26,18 @@ export function ContinentDrawer({ continentId, onClose }) {
         </div>
         
         <div className="flex-1">
-           <h3 className="text-sm font-bold text-slate-400 mb-4 border-b border-slate-100 pb-2">热门国家</h3>
+          <h3 className="text-sm font-bold text-slate-400 mb-4 border-b border-slate-100 pb-2">热门国家</h3>
            <ul className="space-y-2 mb-8">
-             <li className="p-3 bg-slate-50 hover:bg-blue-50 border border-transparent hover:border-blue-100 rounded-xl cursor-pointer transition-all text-slate-700 font-medium">
+             <li 
+               onClick={() => { onClose(); navigate('/country/usa'); }}
+               className="p-3 bg-slate-50 hover:bg-blue-50 border border-transparent hover:border-blue-100 rounded-xl cursor-pointer transition-all text-slate-700 font-medium"
+             >
                🇺🇸 美国
              </li>
-             <li className="p-3 bg-slate-50 hover:bg-blue-50 border border-transparent hover:border-blue-100 rounded-xl cursor-pointer transition-all text-slate-700 font-medium">
+             <li 
+               onClick={() => { onClose(); navigate('/country/canada'); }}
+               className="p-3 bg-slate-50 hover:bg-blue-50 border border-transparent hover:border-blue-100 rounded-xl cursor-pointer transition-all text-slate-700 font-medium"
+             >
                🇨🇦 加拿大
              </li>
            </ul>
