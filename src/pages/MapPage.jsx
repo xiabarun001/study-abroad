@@ -17,33 +17,61 @@ export function MapPage() {
             <h1 className="text-xl font-bold tracking-tight text-primary">留学通 <span className="text-sm font-normal text-outline ml-2">Horizon Ethos</span></h1>
           </div>
           <nav className="hidden lg:flex items-center gap-8">
-            <span className="font-semibold text-primary cursor-pointer">全球排名</span>
-            <span className="text-on-surface-variant hover:text-primary transition-colors cursor-pointer">院校百科</span>
-            <span className="text-on-surface-variant hover:text-primary transition-colors cursor-pointer">奖学金</span>
+            <span className="font-semibold text-primary cursor-pointer">快速评测</span>
+            <span className="text-on-surface-variant hover:text-primary transition-colors cursor-pointer">我的收藏</span>
+            <span className="text-on-surface-variant hover:text-primary transition-colors cursor-pointer">系统设置</span>
           </nav>
         </div>
       </header>
 
       {/* Side Navigation */}
-      <aside className="fixed left-0 top-20 bottom-0 w-64 backdrop-blur-md bg-white/80 border-r border-outline-variant z-30 px-6 py-8 overflow-y-auto">
-        <div className="mb-10">
-          <p className="text-xs text-outline mb-4 uppercase tracking-wider">核心工具</p>
-          <ul className="space-y-2">
-            <li>
-              <div className="flex items-center gap-3 px-4 py-3 bg-primary-container/10 text-primary rounded-xl font-semibold cursor-pointer">
-                <span>探索全球</span>
-              </div>
-            </li>
-          </ul>
+      <aside className="fixed left-0 top-20 bottom-0 w-64 backdrop-blur-md bg-white/95 border-r border-outline-variant z-30 px-6 py-8 overflow-y-auto flex flex-col justify-between">
+        <div>
+          <div className="mb-8">
+            <ul className="space-y-2">
+              <li>
+                <div onClick={() => navigate('/')} className="flex items-center gap-3 px-4 py-3 bg-blue-50 text-blue-600 rounded-xl font-semibold cursor-pointer transition-colors">
+                  <span>🏠 首页</span>
+                </div>
+              </li>
+            </ul>
+          </div>
+          
+          <div className="mb-8">
+            <p className="text-xs text-slate-400 mb-4 tracking-wider pl-4">🌍 大洲</p>
+            <ul className="space-y-1">
+              <li>
+                <div onClick={() => handleContinentClick('north-america')} className="flex items-center gap-3 px-8 py-2 text-slate-600 hover:text-blue-600 hover:bg-slate-50 rounded-lg cursor-pointer transition-colors">
+                  <span>北美洲</span>
+                </div>
+              </li>
+              <li>
+                <div onClick={() => handleContinentClick('europe')} className="flex items-center gap-3 px-8 py-2 text-slate-600 hover:text-blue-600 hover:bg-slate-50 rounded-lg cursor-pointer transition-colors">
+                  <span>欧洲</span>
+                </div>
+              </li>
+              <li>
+                <div onClick={() => handleContinentClick('asia')} className="flex items-center gap-3 px-8 py-2 text-slate-600 hover:text-blue-600 hover:bg-slate-50 rounded-lg cursor-pointer transition-colors">
+                  <span>亚洲</span>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+        
+        <div className="mt-auto">
+           <div className="flex items-center justify-center gap-2 px-4 py-3 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 rounded-xl font-semibold cursor-pointer transition-colors border border-indigo-100">
+             <span>🤖 AI 助手</span>
+           </div>
         </div>
       </aside>
 
       {/* Main Content Area */}
       <main className="ml-64 pt-20 h-screen flex flex-col overflow-hidden">
-        <div className="flex-1 relative bg-[radial-gradient(circle_at_center,_#f4f2fc_0%,_#fbf8ff_100%)]">
+        <div className="flex-1 relative bg-slate-50">
           {/* Map Image (Use a generic placeholder map or CSS block) */}
           <div className="absolute inset-0 z-0 flex items-center justify-center p-10">
-            <div className="w-full h-full bg-slate-200/50 rounded-3xl flex items-center justify-center text-slate-400">
+            <div className="w-full h-full bg-sky-100/60 rounded-3xl flex items-center justify-center text-sky-800 font-medium">
                [Interactive Global Map Loading...]
             </div>
           </div>
