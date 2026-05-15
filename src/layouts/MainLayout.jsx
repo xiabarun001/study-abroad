@@ -28,7 +28,10 @@ export function MainLayout() {
           <nav className="hidden lg:flex items-center gap-8">
             <span className="font-semibold text-primary cursor-pointer">快速评测</span>
             {user && (
-              <span onClick={() => navigate('/favorites')} className="text-on-surface-variant hover:text-primary transition-colors cursor-pointer">我的收藏</span>
+              <>
+                <span onClick={() => navigate('/applications')} className="text-on-surface-variant hover:text-primary transition-colors cursor-pointer">我的申请</span>
+                <span onClick={() => navigate('/favorites')} className="text-on-surface-variant hover:text-primary transition-colors cursor-pointer">我的收藏</span>
+              </>
             )}
           </nav>
         </div>
