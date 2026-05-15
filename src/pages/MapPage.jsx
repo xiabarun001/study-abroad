@@ -42,7 +42,8 @@ export function MapPage() {
     <div className="flex flex-col w-full h-full p-8 overflow-y-auto bg-slate-50">
       {/* Promo Banner */}
       <div className="w-full h-64 bg-indigo-600 rounded-3xl mb-12 flex items-center justify-center text-white shadow-lg overflow-hidden relative">
-        <img src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&q=80&w=1600" className="absolute inset-0 w-full h-full object-cover opacity-40" alt="Study Abroad" />
+        {/* Removed broken img tag, using gradient on the parent div instead */}
+        <div className="absolute inset-0 bg-gradient-to-br from-indigo-500 via-purple-500 to-indigo-800 opacity-80"></div>
         <div className="relative z-10 text-center">
           <h1 className="text-4xl font-bold mb-4 font-outfit">开启您的留学之旅</h1>
           <p className="text-xl opacity-90 font-inter">探索全球顶尖学府，成就无限可能</p>
