@@ -3,13 +3,12 @@ const path = require('path');
 const { initDb } = require('./db');
 const { fetchRSS } = require('./scraper');
 const { extractProgramData } = require('./main/scraper');
-const { getAiRecommendation } = require('./main/ai_advisor');
+const { getAiRecommendation, chatWithAgent } = require('./main/ai_advisor');
 const { createBrowserView, closeBrowserView } = require('./main/webview');
 
 let mainWindowInstance = null;
 
-const dbDir = path.join(app.getPath('userData'), 'study_abroad_data');
-const db = initDb(dbDir);
+let db;
 
 function createMenu(mainWindow, lang) {
   const isZh = lang === 'zh';
@@ -67,6 +66,9 @@ function createWindow() {
 }
 
 app.whenReady().then(() => {
+  const dbDir = path.join(app.getPath('userData'), 'study_abroad_data');
+  db = initDb(dbDir);
+
   createWindow();
 
   ipcMain.handle('get-articles', () => {
@@ -91,6 +93,10 @@ app.whenReady().then(() => {
 
   ipcMain.handle('get-ai-recommendation', async (event, profile, programs) => {
     return await getAiRecommendation(profile, programs);
+  });
+
+  ipcMain.handle('chat-with-agent', async (event, messages, keys) => {
+    return await chatWithAgent(messages, keys);
   });
 
   ipcMain.handle('force-scrape', async (event, url) => {
