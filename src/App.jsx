@@ -8,6 +8,7 @@ import { CountryPage } from './pages/CountryPage';
 import { UniversityPage } from './pages/UniversityPage';
 import { FavoritesPage } from './pages/FavoritesPage';
 import { ApplicationsPage } from './pages/ApplicationsPage';
+import { AiAdvisorPage } from './pages/AiAdvisorPage';
 
 function App() {
   const { i18n } = useTranslation();
@@ -30,6 +31,7 @@ function App() {
           <Route path="/university/:id" element={<UniversityPage />} />
           <Route path="/favorites" element={<FavoritesPage />} />
           <Route path="/applications" element={<ApplicationsPage />} />
+          <Route path="/advisor" element={<AiAdvisorPage />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
