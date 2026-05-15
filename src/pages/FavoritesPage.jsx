@@ -3,12 +3,27 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { favoriteService } from '../services/favoriteService';
 import { FavoriteButton } from '../components/FavoriteButton';
+import { applicationService } from '../services/applicationService';
 
 export function FavoritesPage() {
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const [favorites, setFavorites] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const handleStartApplication = async (programId) => {
+    try {
+      await applicationService.createApplication(user.id, programId);
+      navigate('/applications');
+    } catch (err) {
+      if (err.code === '23505') {
+        alert('您已经将该项目加入到了申请列表中！');
+        navigate('/applications');
+      } else {
+        console.error('Failed to start application:', err);
+      }
+    }
+  };
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -59,7 +74,10 @@ export function FavoritesPage() {
                 </div>
                 <h3 className="text-xl font-bold text-slate-800 pr-10 mb-2 leading-tight">{program.title}</h3>
                 <p className="text-slate-500 text-sm line-clamp-3 mb-4">{program.description || '暂无详细介绍'}</p>
-                <div className="mt-auto flex justify-end">
+                <div className="mt-auto flex justify-between items-center">
+                  <button onClick={() => handleStartApplication(program.id)} className="text-sm bg-indigo-50 text-indigo-600 px-4 py-1.5 rounded-lg hover:bg-indigo-100 font-semibold transition-colors">
+                    ✨ 启动申请
+                  </button>
                   {program.url && (
                     <a href={program.url} target="_blank" rel="noreferrer" className="text-indigo-600 font-semibold text-sm hover:underline">
                       查看详情 →
