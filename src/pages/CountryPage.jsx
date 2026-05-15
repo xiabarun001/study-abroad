@@ -1,101 +1,72 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { supabase } from '../shared/db/supabase';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { universityService } from '../services/universityService';
+import { locationService } from '../services/locationService';
 
 export function CountryPage() {
-  const { countryId } = useParams();
   const navigate = useNavigate();
+  const { countryId } = useParams();
   const [universities, setUniversities] = useState([]);
+  const [country, setCountry] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const countryNameMap = {
-    usa: '美国 🇺🇸',
-    canada: '加拿大 🇨🇦'
-  };
-
-  const displayName = countryNameMap[countryId] || countryId;
-  const dbLocationMatch = countryId === 'usa' ? '美国' : countryId === 'canada' ? '加拿大' : '';
-
   useEffect(() => {
-    async function fetchUniversities() {
+    const fetchData = async () => {
       try {
-        let query = supabase.from('universities').select('*').order('qs_ranking', { ascending: true });
-        if (dbLocationMatch) {
-          query = query.ilike('location', `%${dbLocationMatch}%`);
-        }
+        const countryData = await locationService.getCountryById(countryId);
+        if (countryData) setCountry(countryData);
         
-        const { data, error } = await query;
-        if (error) throw error;
-        setUniversities(data || []);
+        const uniData = await universityService.getUniversitiesByCountry(countryId);
+        if (uniData) setUniversities(uniData);
       } catch (err) {
-        console.error('Error fetching universities:', err);
+        console.error("Failed to load country data:", err);
       } finally {
         setLoading(false);
       }
-    }
-    
-    fetchUniversities();
-    
-    // Setup Realtime Subscription
-    const subscription = supabase
-      .channel('public:universities')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'universities' }, fetchUniversities)
-      .subscribe();
-      
-    return () => {
-      supabase.removeChannel(subscription);
     };
-  }, [countryId, dbLocationMatch]);
+    if (countryId) fetchData();
+  }, [countryId]);
 
   return (
-    <div className="w-full h-screen bg-slate-50 flex flex-col overflow-hidden">
-      {/* Header */}
-      <header className="bg-white border-b border-slate-200 px-8 py-4 flex items-center justify-between shadow-sm z-10">
-        <div className="flex items-center gap-4">
-          <button 
-            onClick={() => navigate('/')}
-            className="flex items-center gap-2 text-slate-500 hover:text-blue-600 font-medium transition-colors"
-          >
-            ← 返回地图
+    <div className="app-container">
+      <header className="header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          <button className="button-glow" onClick={() => navigate(-1)} style={{ background: 'linear-gradient(135deg, #4f46e5 0%, #3730a3 100%)', padding: '0.5rem 1rem' }}>
+            ← 返回
           </button>
-          <div className="h-6 w-px bg-slate-200"></div>
-          <h1 className="text-xl font-bold text-slate-800">{displayName} - 院校列表</h1>
+          <h1 style={{ margin: 0 }}>{country ? country.name : '探索大学'}</h1>
         </div>
       </header>
 
-      {/* Main Content */}
-      <div className="flex-1 p-8 overflow-y-auto">
-        <div className="max-w-6xl mx-auto">
-          {loading ? (
-            <div className="text-center py-20 text-slate-500">加载数据中...</div>
-          ) : universities.length === 0 ? (
-            <div className="text-center py-20 bg-white rounded-2xl border border-slate-100 shadow-sm">
-               <p className="text-slate-500 mb-2">暂无该国家的院校数据</p>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-              {universities.map(uni => (
-                <div 
-                  key={uni.id} 
-                  onClick={() => navigate(`/university/${uni.id}`)}
-                  className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md hover:-translate-y-1 transition-all cursor-pointer relative"
-                >
-                  {uni.qs_ranking && (
-                    <div className="absolute top-4 right-4 bg-yellow-100 text-yellow-700 text-xs font-bold px-2 py-1 rounded-full">
-                      QS #{uni.qs_ranking}
-                    </div>
-                  )}
-                  <div className="w-12 h-12 bg-blue-50 rounded-full mb-4 flex items-center justify-center text-blue-600 font-bold border border-blue-100 overflow-hidden">
-                    {uni.name_zh ? uni.name_zh.substring(0, 1) : 'U'}
+      <main className="main-layout bg-transparent border-none shadow-none mt-4 h-full overflow-y-auto w-full block">
+        {loading ? (
+          <div className="w-full flex justify-center py-20 text-slate-400">正在加载大学列表...</div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full pb-10">
+            {universities.map(uni => (
+              <div 
+                key={uni.id} 
+                onClick={() => navigate(`/university/${uni.id}`)}
+                className="glass-panel cursor-pointer hover:shadow-xl transition-all hover:border-indigo-300"
+                style={{ padding: '1.25rem' }}
+              >
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold text-xl flex-shrink-0">
+                    {uni.name ? uni.name.charAt(0) : 'U'}
                   </div>
-                  <h3 className="font-bold text-lg text-slate-800 mb-1 truncate" title={uni.name_zh}>{uni.name_zh}</h3>
-                  <p className="text-sm text-slate-500 font-medium truncate" title={uni.location}>{uni.location}</p>
+                  <div>
+                    <h3 className="text-lg font-bold text-white m-0 leading-tight">{uni.name}</h3>
+                    <p className="text-sm text-slate-400 m-0 mt-1">{uni.city || '未知城市'}</p>
+                  </div>
                 </div>
-              ))}
-            </div>
-          )}
-        </div>
-      </div>
+              </div>
+            ))}
+            {universities.length === 0 && (
+              <div className="col-span-full text-center py-10 text-slate-500">该国家下暂无大学数据</div>
+            )}
+          </div>
+        )}
+      </main>
     </div>
   );
 }
