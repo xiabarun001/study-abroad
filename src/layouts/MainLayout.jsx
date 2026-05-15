@@ -3,6 +3,7 @@ import { Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { authService } from '../services/authService';
 import { LoginModal } from '../components/LoginModal';
+import { AiAdvisorDrawer } from '../components/AiAdvisorDrawer';
 
 /**
  * 整个应用的主体布局组件
@@ -12,6 +13,7 @@ export function MainLayout() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const [isAiDrawerOpen, setIsAiDrawerOpen] = useState(false);
 
   const handleLogout = async () => {
     await authService.signOut();
@@ -33,6 +35,12 @@ export function MainLayout() {
                 <span onClick={() => navigate('/favorites')} className="text-on-surface-variant hover:text-primary transition-colors cursor-pointer">我的收藏</span>
               </>
             )}
+            <button 
+              onClick={() => setIsAiDrawerOpen(true)}
+              className="flex items-center gap-2 bg-indigo-50 text-indigo-600 hover:bg-indigo-100 px-3 py-1.5 rounded-full font-bold transition-colors text-sm"
+            >
+              <span>✨</span> AI 助手
+            </button>
           </nav>
         </div>
 
@@ -56,6 +64,7 @@ export function MainLayout() {
       </main>
 
       <LoginModal isOpen={isLoginModalOpen} onClose={() => setIsLoginModalOpen(false)} />
+      <AiAdvisorDrawer isOpen={isAiDrawerOpen} onClose={() => setIsAiDrawerOpen(false)} />
     </div>
   );
 }
