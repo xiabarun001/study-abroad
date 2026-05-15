@@ -7,6 +7,7 @@ import { ContinentPage } from './pages/ContinentPage';
 import { CountryPage } from './pages/CountryPage';
 import { UniversityPage } from './pages/UniversityPage';
 import { FavoritesPage } from './pages/FavoritesPage';
+import { ApplicationsPage } from './pages/ApplicationsPage';
 
 function App() {
   const { i18n } = useTranslation();
@@ -28,6 +29,7 @@ function App() {
           <Route path="/country/:countryId" element={<CountryPage />} />
           <Route path="/university/:id" element={<UniversityPage />} />
           <Route path="/favorites" element={<FavoritesPage />} />
+          <Route path="/applications" element={<ApplicationsPage />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
