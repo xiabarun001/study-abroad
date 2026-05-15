@@ -3,7 +3,7 @@ import { Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { authService } from '../services/authService';
 import { LoginModal } from '../components/LoginModal';
-import { AiAdvisorDrawer } from '../components/AiAdvisorDrawer';
+import { ApiKeysModal } from '../components/ApiKeysModal';
 
 /**
  * 整个应用的主体布局组件
@@ -13,7 +13,7 @@ export function MainLayout() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
-  const [isAiDrawerOpen, setIsAiDrawerOpen] = useState(false);
+  const [isApiModalOpen, setIsApiModalOpen] = useState(false);
 
   const handleLogout = async () => {
     await authService.signOut();
@@ -36,7 +36,14 @@ export function MainLayout() {
               </>
             )}
             <button 
-              onClick={() => setIsAiDrawerOpen(true)}
+              onClick={() => setIsApiModalOpen(true)} 
+              className="text-slate-400 hover:text-indigo-600 transition-colors w-8 h-8 flex items-center justify-center rounded-full bg-slate-50 hover:bg-indigo-50"
+              title="API Settings"
+            >
+              ⚙️
+            </button>
+            <button 
+              onClick={() => navigate('/advisor')}
               className="flex items-center gap-2 bg-indigo-50 text-indigo-600 hover:bg-indigo-100 px-3 py-1.5 rounded-full font-bold transition-colors text-sm"
             >
               <span>✨</span> AI 助手
@@ -64,7 +71,7 @@ export function MainLayout() {
       </main>
 
       <LoginModal isOpen={isLoginModalOpen} onClose={() => setIsLoginModalOpen(false)} />
-      <AiAdvisorDrawer isOpen={isAiDrawerOpen} onClose={() => setIsAiDrawerOpen(false)} />
+      <ApiKeysModal isOpen={isApiModalOpen} onClose={() => setIsApiModalOpen(false)} />
     </div>
   );
 }
