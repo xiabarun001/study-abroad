@@ -9,6 +9,7 @@ import { UniversityPage } from './pages/UniversityPage';
 import { FavoritesPage } from './pages/FavoritesPage';
 import { ApplicationsPage } from './pages/ApplicationsPage';
 import { AiAdvisorPage } from './pages/AiAdvisorPage';
+import { DiscoverPage } from './pages/DiscoverPage';
 
 function App() {
   const { i18n } = useTranslation();
@@ -26,6 +27,7 @@ function App() {
       <Routes>
         <Route element={<MainLayout />}>
           <Route path="/" element={<MapPage />} />
+          <Route path="/discover" element={<DiscoverPage />} />
           <Route path="/continent/:continentId" element={<ContinentPage />} />
           <Route path="/country/:countryId" element={<CountryPage />} />
           <Route path="/university/:id" element={<UniversityPage />} />
