@@ -59,7 +59,7 @@ export function MapPage() {
   return (
     <div className="flex flex-col w-full h-full overflow-y-auto bg-slate-50 relative">
       {/* Dynamic Hero Section */}
-      <div className="w-full bg-slate-900 text-white relative flex-shrink-0">
+      <div className="w-full min-h-[60vh] md:min-h-[70vh] bg-slate-900 text-white relative flex-shrink-0 flex flex-col justify-center">
         <div className="absolute inset-0 overflow-hidden">
           <img src="https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&w=2000&q=80" alt="Campus" className="w-full h-full object-cover opacity-20 object-center" />
           <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/90 to-transparent"></div>
@@ -76,12 +76,13 @@ export function MapPage() {
             <p className="text-xl text-slate-300 max-w-xl leading-relaxed">
               Horizon 汇聚全球顶尖学府数据，提供一站式的选校、时间轴与申请看板管理。与 AI 顾问对话，即刻定制您的专属升学路线。
             </p>
-            <div className="flex gap-4 pt-4">
-              <button onClick={() => navigate('/advisor')} className="px-6 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl transition-all shadow-lg shadow-indigo-600/30 flex items-center gap-2">
+            <div className="flex flex-col gap-4 pt-4 max-w-[240px]">
+              <button onClick={() => navigate('/advisor')} className="w-full px-6 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl transition-all shadow-lg shadow-indigo-600/30 flex items-center justify-center gap-2">
                 <span>✨</span> 唤醒 AI 顾问
               </button>
-              <button onClick={() => window.scrollTo({top: 500, behavior: 'smooth'})} className="px-6 py-3 bg-white/10 hover:bg-white/20 text-white font-bold rounded-xl backdrop-blur-sm transition-all border border-white/10">
-                探索名校
+              <button onClick={() => navigate('/discover')} className="w-full px-6 py-3 bg-white/10 hover:bg-white/20 text-white font-bold rounded-xl backdrop-blur-sm transition-all border border-white/10 flex items-center justify-center gap-2 group">
+                探索项目
+                <span className="opacity-0 -ml-4 group-hover:opacity-100 group-hover:ml-0 transition-all duration-300">&rarr;</span>
               </button>
             </div>
           </div>
