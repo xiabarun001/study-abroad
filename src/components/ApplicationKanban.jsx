@@ -1,5 +1,6 @@
 import React from 'react';
 
+// 定义申请看板的生命周期各阶段列
 const STATUS_COLUMNS = [
   { id: 'planning', title: '规划中' },
   { id: 'preparing', title: '准备材料' },
@@ -8,6 +9,10 @@ const STATUS_COLUMNS = [
   { id: 'result', title: '结果' }
 ];
 
+/**
+ * 申请进度看板组件 (Kanban View)
+ * 将留学申请按进度状态进行分类展示，支持直接在卡片上修改状态和截止日期。
+ */
 export function ApplicationKanban({ apps, handleStatusChange, handleDeadlineChange, handleDelete, isUrgent }) {
   return (
     <div className="flex gap-6 overflow-x-auto pb-4 h-full">

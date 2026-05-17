@@ -3,6 +3,10 @@ import { useAuth } from '../hooks/useAuth';
 import { favoriteService } from '../services/favoriteService';
 import { LoginModal } from './LoginModal';
 
+/**
+ * 全局复用的爱心收藏按钮组件 (Favorite Button)
+ * 接受 programId 作为参数，内部自动处理用户登录状态检查与收藏库的读写。
+ */
 export function FavoriteButton({ programId }) {
   const { user } = useAuth();
   const [isFav, setIsFav] = useState(false);

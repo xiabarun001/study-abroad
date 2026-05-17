@@ -1,55 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { supabase } from '../shared/db/supabase';
+import { useUniversity } from '../hooks/useUniversity';
 
 export function UniversityPage() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [university, setUniversity] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    // If id is not a valid UUID format, we might have an issue fetching, but let supabase handle the error
-    async function fetchUniversityData() {
-      try {
-        const { data, error } = await supabase
-          .from('universities')
-          .select('*')
-          .eq('id', id)
-          .single();
-          
-        if (error) {
-          if (error.code !== 'PGRST116') { // PGRST116 is "No rows found"
-            throw error;
-          }
-        }
-        setUniversity(data || null);
-      } catch (err) {
-        console.error('Error fetching university:', err);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchUniversityData();
-
-    // Setup Realtime Subscription
-    const subscription = supabase
-      .channel(`public:universities:id=eq.${id}`)
-      .on(
-        'postgres_changes',
-        { event: '*', schema: 'public', table: 'universities', filter: `id=eq.${id}` },
-        (payload) => {
-          console.log('Realtime update received:', payload);
-          fetchUniversityData();
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(subscription);
-    };
-  }, [id]);
+  const { university, loading } = useUniversity(id);
 
   if (loading) {
     return (

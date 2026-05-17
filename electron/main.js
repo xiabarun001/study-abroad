@@ -6,57 +6,31 @@ const { extractProgramData } = require('./main/scraper');
 const { getAiRecommendation, chatWithAgent } = require('./main/ai_advisor');
 const { createBrowserView, closeBrowserView } = require('./main/webview');
 
-let mainWindowInstance = null;
+let mainWindowInstance = null; // 缓存主窗口实例，用于 BrowserView 操作
 
+// 数据库连接实例 (遗留本地 SQLite 用途)
 let db;
 
-function createMenu(mainWindow, lang) {
-  const isZh = lang === 'zh';
-  const template = [
-    {
-      label: isZh ? '文件 (File)' : 'File',
-      submenu: [
-        {
-          label: isZh ? '语言 (Language)' : 'Language',
-          submenu: [
-            { label: '中文 (Chinese)', type: 'radio', checked: isZh, click: () => changeLanguage('zh', mainWindow) },
-            { label: 'English', type: 'radio', checked: !isZh, click: () => changeLanguage('en', mainWindow) }
-          ]
-        },
-        { type: 'separator' },
-        { label: isZh ? '退出 (Exit)' : 'Exit', role: 'quit' }
-      ]
-    },
-    {
-      label: isZh ? '视图 (View)' : 'View',
-      submenu: [
-        { role: 'reload', label: isZh ? '重载 (Reload)' : 'Reload' },
-        { role: 'toggledevtools', label: isZh ? '开发者工具 (DevTools)' : 'Toggle DevTools' }
-      ]
-    }
-  ];
-  Menu.setApplicationMenu(Menu.buildFromTemplate(template));
-}
+// 移除默认应用菜单，以保证界面清爽
 
-function changeLanguage(lang, mainWindow) {
-  createMenu(mainWindow, lang);
-  mainWindow.webContents.send('change-language', lang);
-}
-
+/**
+ * 创建并配置应用主窗口
+ */
 function createWindow() {
   const mainWindow = new BrowserWindow({
     width: 1200,
     height: 800,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
-      nodeIntegration: false,
-      contextIsolation: true
+      nodeIntegration: false, // 禁用 nodeIntegration 保证安全
+      contextIsolation: true  // 启用上下文隔离
     }
   });
 
   mainWindowInstance = mainWindow;
 
-  createMenu(mainWindow, 'zh');
+  // Remove the default application menu completely
+  Menu.setApplicationMenu(null);
 
   if (process.env.VITE_DEV_SERVER_URL) {
     mainWindow.loadURL(process.env.VITE_DEV_SERVER_URL);
@@ -65,16 +39,23 @@ function createWindow() {
   }
 }
 
+/**
+ * 应用准备就绪生命周期回调
+ */
 app.whenReady().then(() => {
+  // 初始化本地 SQLite 数据库存放路径
   const dbDir = path.join(app.getPath('userData'), 'study_abroad_data');
   db = initDb(dbDir);
 
   createWindow();
 
+  // ----- 以下为 IPC 通信句柄注册 (响应渲染进程请求) -----
+
   ipcMain.handle('get-articles', () => {
     return db.prepare('SELECT * FROM articles ORDER BY created_at DESC LIMIT 50').all();
   });
   
+  // 在主窗口内打开内置的 BrowserView (用于外部链接加载)
   ipcMain.handle('open-external', (event, url) => {
     if (mainWindowInstance) {
       createBrowserView(mainWindowInstance, url);
@@ -87,6 +68,7 @@ app.whenReady().then(() => {
     }
   });
 
+  // 调用基础爬虫提取特定项目页面信息
   ipcMain.handle('scrape-program', async (event, html) => {
     return extractProgramData(html);
   });
@@ -95,8 +77,15 @@ app.whenReady().then(() => {
     return await getAiRecommendation(profile, programs);
   });
 
+  // 与 AI 助手进行对话
   ipcMain.handle('chat-with-agent', async (event, messages, keys) => {
     return await chatWithAgent(messages, keys);
+  });
+
+  // AI 并发爬取各大引擎并筛选留学项目
+  ipcMain.handle('ai-search-programs', async (event, params, keys) => {
+    const { aiSearchPrograms } = require('./main/ai_advisor');
+    return await aiSearchPrograms(params, keys);
   });
 
   ipcMain.handle('force-scrape', async (event, url) => {

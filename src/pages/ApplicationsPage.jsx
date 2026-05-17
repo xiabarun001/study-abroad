@@ -4,11 +4,16 @@ import { applicationService } from '../services/applicationService';
 import { ApplicationKanban } from '../components/ApplicationKanban';
 import { ApplicationCalendar } from '../components/ApplicationCalendar';
 
+/**
+ * 我的申请追踪页面组件 (Applications Page)
+ * 供用户管理所有的留学申请进度。
+ * 支持双视图切换：看板视图 (Kanban) 和 日历视图 (Calendar)。
+ */
 export function ApplicationsPage() {
   const { user, loading: authLoading } = useAuth();
-  const [apps, setApps] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [activeView, setActiveView] = useState('kanban');
+  const [apps, setApps] = useState([]); // 当前用户的申请记录列表
+  const [loading, setLoading] = useState(true); // 数据加载状态
+  const [activeView, setActiveView] = useState('kanban'); // 当前激活的视图类型 ('kanban' | 'calendar')
 
   const fetchApps = async () => {
     if (!user) return;

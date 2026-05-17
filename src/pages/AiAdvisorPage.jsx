@@ -3,12 +3,17 @@ import { apiKeysService } from '../services/apiKeysService';
 import { applicationService } from '../services/applicationService';
 import { useAuth } from '../hooks/useAuth';
 
+/**
+ * AI 顾问聊天页面组件 (AiAdvisor Page)
+ * 提供与 AI（基于 OpenAI 或 DeepSeek）实时对话的界面。
+ * 并能接收 AI 解析出的推荐项目 JSON，渲染成侧边栏供用户“一键导入”到申请看板。
+ */
 export function AiAdvisorPage() {
   const { user } = useAuth();
-  const [input, setInput] = useState('');
-  const [messages, setMessages] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [recommended, setRecommended] = useState([]);
+  const [input, setInput] = useState(''); // 用户聊天输入框状态
+  const [messages, setMessages] = useState([]); // 当前会话的聊天记录上下文
+  const [loading, setLoading] = useState(false); // AI 思考/爬虫过程的加载状态
+  const [recommended, setRecommended] = useState([]); // 从 AI 回复中提取的推荐项目列表
 
   const handleSend = async () => {
     if (!input.trim() || !window.electronAPI) return;
@@ -58,8 +63,9 @@ export function AiAdvisorPage() {
         <button 
           onClick={() => { setMessages([]); setRecommended([]); }}
           className="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium rounded-xl transition-colors text-sm flex items-center justify-center gap-2"
+          title="新建咨询会话"
         >
-          <span>➕</span> 新建咨询会话
+          <span>➕</span>
         </button>
         <div className="mt-8 flex-1 overflow-y-auto">
           {/* Mock history */}
@@ -70,14 +76,12 @@ export function AiAdvisorPage() {
       </div>
       
       {/* Chat Area */}
-      <div className="flex-1 flex flex-col relative bg-slate-50">
-        <div className="flex-1 overflow-y-auto p-4 md:p-8 space-y-6 pb-32">
+      <div className="flex-1 flex flex-col bg-slate-50">
+        <div className="flex-1 overflow-y-auto p-4 md:p-8 space-y-6">
           {messages.length === 0 && (
             <div className="h-full flex flex-col items-center justify-center text-slate-400">
               <span className="text-6xl mb-4 opacity-20">🤖</span>
               <p className="text-lg font-medium">我是您的 AI 申请顾问</p>
-              <p className="text-sm mt-2">您可以问我：“今年斯坦福CS硕士对GPA有什么要求？”</p>
-              <p className="text-sm mt-1">我会实时为您在网上检索最新招生简章。</p>
             </div>
           )}
           {messages.map((m, i) => (
@@ -98,8 +102,8 @@ export function AiAdvisorPage() {
         </div>
         
         {/* Input Area */}
-        <div className="absolute bottom-0 left-0 right-0 p-4 md:p-8 bg-gradient-to-t from-slate-50 via-slate-50 to-transparent">
-          <div className="flex gap-3 max-w-4xl mx-auto relative bg-white p-2 rounded-2xl shadow-lg border border-slate-200 focus-within:border-indigo-500 focus-within:ring-4 focus-within:ring-indigo-500/10 transition-all">
+        <div className="p-4 md:p-8 pt-0 bg-slate-50">
+          <div className="flex gap-3 max-w-4xl mx-auto bg-white p-2 rounded-2xl shadow-lg border border-slate-200 focus-within:border-indigo-500 focus-within:ring-4 focus-within:ring-indigo-500/10 transition-all">
             <input 
               value={input} 
               onChange={e => setInput(e.target.value)} 

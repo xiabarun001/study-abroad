@@ -6,8 +6,9 @@ import { LoginModal } from '../components/LoginModal';
 import { ApiKeysModal } from '../components/ApiKeysModal';
 
 /**
- * 整个应用的主体布局组件
- * 包含全局顶部导航栏(Header)，并将所有页面的具体内容渲染在下面的 <Outlet /> 中。
+ * 整个应用的主框架组件 (Layout)
+ * 包含全局顶部导航栏 (Header)，并将所有子页面 (Pages) 的具体内容渲染在下面的 <Outlet /> 中。
+ * 设定为满屏高度 (h-screen) 并防止外层滚动，确保由各子页面独立处理滚动逻辑。
  */
 export function MainLayout() {
   const { user } = useAuth();
@@ -21,7 +22,7 @@ export function MainLayout() {
   };
 
   return (
-    <div className="text-slate-800 bg-slate-50 min-h-screen font-sans flex flex-col overflow-hidden">
+    <div className="text-slate-800 bg-slate-50 h-screen font-sans flex flex-col overflow-hidden">
       <header className="fixed top-0 left-0 right-0 z-40 bg-white/80 backdrop-blur-md border-b border-slate-200 px-8 h-16 flex items-center justify-between shadow-sm">
         <div className="flex items-center gap-12">
           <div className="flex items-center gap-3 cursor-pointer group" onClick={() => navigate('/')}>
@@ -29,26 +30,34 @@ export function MainLayout() {
             <h1 className="text-xl font-bold tracking-tight text-slate-800">留学通</h1>
           </div>
           <nav className="hidden lg:flex items-center gap-6 text-sm font-medium">
-            <span onClick={() => navigate('/')} className="text-slate-500 hover:text-indigo-600 transition-colors cursor-pointer">发现项目</span>
+            <button 
+              onClick={() => navigate('/discover')}
+              className="relative overflow-hidden px-4 py-1.5 rounded-full font-bold text-indigo-600 hover:text-indigo-700 transition-all border border-indigo-200 hover:border-indigo-300 group shadow-sm hover:shadow bg-white"
+            >
+              <span className="relative z-10 flex items-center gap-1">
+                <span className="group-hover:rotate-12 transition-transform duration-300 inline-block text-black/80">🧭</span> 
+                项目大全
+              </span>
+              <div className="absolute inset-0 bg-gradient-to-r from-indigo-50 to-purple-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+            </button>
             {user && (
               <>
                 <span onClick={() => navigate('/applications')} className="text-slate-500 hover:text-indigo-600 transition-colors cursor-pointer">我的申请</span>
                 <span onClick={() => navigate('/favorites')} className="text-slate-500 hover:text-indigo-600 transition-colors cursor-pointer">我的收藏</span>
               </>
             )}
-            <div className="w-px h-4 bg-slate-200 mx-2"></div>
+            <button 
+              onClick={() => navigate('/advisor')}
+              className="flex items-center gap-2 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 px-4 py-1.5 rounded-full font-bold transition-all hover:shadow-sm"
+            >
+              <span>✨</span> AI 助手
+            </button>
             <button 
               onClick={() => setIsApiModalOpen(true)} 
               className="text-slate-400 hover:text-indigo-600 transition-colors w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 hover:bg-indigo-50"
               title="API Settings"
             >
               ⚙️
-            </button>
-            <button 
-              onClick={() => navigate('/advisor')}
-              className="flex items-center gap-2 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 px-4 py-1.5 rounded-full font-bold transition-all hover:shadow-sm"
-            >
-              <span>✨</span> AI 助手
             </button>
           </nav>
         </div>

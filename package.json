@@ -22,9 +22,11 @@
         "cheerio": "^1.2.0",
         "electron-squirrel-startup": "^1.0.1",
         "i18next": "^26.0.4",
+        "leaflet": "^1.9.4",
         "react": "^19.2.5",
         "react-dom": "^19.2.5",
         "react-i18next": "^17.0.2",
+        "react-leaflet": "^5.0.0",
         "react-router-dom": "^7.14.2",
         "rss-parser": "^3.13.0"
     },

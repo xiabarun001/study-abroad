@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 
+// 定义不同申请状态的颜色样式，用于日历卡片背景
 const STATUS_COLORS = {
   planning: 'bg-blue-100 text-blue-700 border-blue-200',
   preparing: 'bg-purple-100 text-purple-700 border-purple-200',
@@ -8,6 +9,11 @@ const STATUS_COLORS = {
   result: 'bg-slate-200 text-slate-700 border-slate-300'
 };
 
+/**
+ * 申请日历视图组件 (Calendar View)
+ * 提取申请记录中的截止日期 (deadline)，并直观展示在按月划分的日历网格上。
+ * 会根据 isUrgent 判断标记为即将截止的紧急项目。
+ */
 export function ApplicationCalendar({ apps, isUrgent }) {
   const [currentDate, setCurrentDate] = useState(new Date());
 

@@ -2,11 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { locationService } from '../services/locationService';
 
+/**
+ * 大洲专属展示页面组件 (Continent Page)
+ * 根据 URL 路径中的 continentId 加载该大洲下属的所有国家列表并展示卡片
+ */
 export function ContinentPage() {
   const navigate = useNavigate();
-  const { continentId } = useParams();
-  const [countries, setCountries] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { continentId } = useParams(); // 从路由参数中提取大洲 ID
+  const [countries, setCountries] = useState([]); // 国家列表状态
+  const [loading, setLoading] = useState(true); // 加载状态
 
   useEffect(() => {
     const fetchCountries = async () => {
