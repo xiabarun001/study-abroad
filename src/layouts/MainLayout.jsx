@@ -26,7 +26,7 @@ export function MainLayout() {
         <div className="flex items-center gap-12">
           <div className="flex items-center gap-3 cursor-pointer group" onClick={() => navigate('/')}>
             <div className="w-8 h-8 bg-indigo-600 text-white flex items-center justify-center rounded-lg font-bold text-xl group-hover:bg-indigo-700 transition-colors">H</div>
-            <h1 className="text-xl font-bold tracking-tight text-slate-800">留学通 <span className="text-sm font-medium text-slate-400 ml-1">Horizon</span></h1>
+            <h1 className="text-xl font-bold tracking-tight text-slate-800">留学通</h1>
           </div>
           <nav className="hidden lg:flex items-center gap-6 text-sm font-medium">
             <span onClick={() => navigate('/')} className="text-slate-500 hover:text-indigo-600 transition-colors cursor-pointer">发现项目</span>
