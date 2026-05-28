@@ -1,5 +1,28 @@
-# Logs
-logs
+# ##########################################
+# 1. 依赖库目录 (Dependencies)
+# ##########################################
+node_modules/
+jspm_packages/
+.pnp
+.pnp.js
+
+# ##########################################
+# 2. 构建、打包与缓存产物 (Build & Packaging Outputs)
+# ##########################################
+dist/
+dist-ssr/
+out/
+release/
+build/
+.vite/
+.cache/
+.parcel-cache/
+.eslintcache/
+
+# ##########################################
+# 3. 日志文件 (Logs)
+# ##########################################
+logs/
 *.log
 npm-debug.log*
 yarn-debug.log*
@@ -7,34 +30,54 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
+# ##########################################
+# 4. 本地敏感环境变量文件 (Environment & Secrets)
+# ##########################################
+# 排除所有本地环境配置文件，只保留 .env.example 作为模板
+.env
+.env.*
+!.env.example
 *.local
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 
-# Editor directories and files
+# ##########################################
+# 5. 本地数据库及临时文件 (Database Caches & Temp Files)
+# ##########################################
+# 忽略 SQLite 本地主文件
+data.sqlite
+*.sqlite
+*.db
+
+# 忽略 SQLite 自动生成的事务日志、共享内存与写前日志等辅助缓存文件
+*.sqlite-journal
+*.sqlite-wal
+*.sqlite-shm
+*.db-journal
+
+# 本地临时数据库目录
+temp_db/
+supabase/temp_db/
+
+# ##########################################
+# 6. 系统与 IDE 编辑器生成文件 (System & Editor Files)
+# ##########################################
 .vscode/*
 !.vscode/extensions.json
-.idea
+.idea/
 .DS_Store
+Thumbs.db
+desktop.ini
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
 
-# Environment
-.env
-.env.*
-!.env.example
-
-# Custom local databases
-data.sqlite
-temp_db
-supabase/temp_db
-
-# Worktrees
-.worktrees/
-
-# AI configs
+# ##########################################
+# 7. AI 辅助配置与 Git 工作树 (Tooling & Worktrees)
+# ##########################################
 .superpowers/
+.worktrees/
