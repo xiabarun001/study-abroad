@@ -27,7 +27,25 @@ contextBridge.exposeInMainWorld('electronAPI', {
   getAiRecommendation: (profile, programs) => ipcRenderer.invoke('get-ai-recommendation', profile, programs),
   
   // 与 AI 留学顾问对话接口
-  chatWithAgent: (messages, keys) => ipcRenderer.invoke('chat-with-agent', messages, keys),
+  chatWithAgent: (messages, keys, options) => ipcRenderer.invoke('chat-with-agent', messages, keys, options),
+  
+  // 监听 AI 顾问的实时处理状态，并返回一个取消订阅函数，防止 React 重复监听导致内存泄漏
+  onAgentStatus: (callback) => {
+    const listener = (event, status) => callback(status);
+    ipcRenderer.on('chat-agent-status', listener);
+    return () => {
+      ipcRenderer.removeListener('chat-agent-status', listener);
+    };
+  },
+
+  // 监听 AI 顾问输出的流式文本数据片段，并返回取消订阅函数以防止内存泄漏
+  onAgentChunk: (callback) => {
+    const listener = (event, chunk) => callback(chunk);
+    ipcRenderer.on('chat-agent-chunk', listener);
+    return () => {
+      ipcRenderer.removeListener('chat-agent-chunk', listener);
+    };
+  },
   
   // AI 实时搜索并提取留学项目
   aiSearchPrograms: (params, keys) => ipcRenderer.invoke('ai-search-programs', params, keys)

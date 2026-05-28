@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
 
-// 定义不同申请状态的颜色样式，用于日历卡片背景
+// 定义不同申请状态的颜色样式，用于日历卡片背景（包括新加入的补充材料、录取和拒绝状态）
 const STATUS_COLORS = {
   planning: 'bg-blue-100 text-blue-700 border-blue-200',
   preparing: 'bg-purple-100 text-purple-700 border-purple-200',
-  submitted: 'bg-green-100 text-green-700 border-green-200',
+  supplement: 'bg-indigo-100 text-indigo-700 border-indigo-200', // 补充材料样式
+  submitted: 'bg-teal-100 text-teal-700 border-teal-200', // 已提交样式，修改为teal
   waiting: 'bg-amber-100 text-amber-700 border-amber-200',
-  result: 'bg-slate-200 text-slate-700 border-slate-300'
+  offer: 'bg-emerald-100 text-emerald-700 border-emerald-200', // 已获 Offer 样式，绿色喜庆
+  rejected: 'bg-rose-100 text-rose-700 border-rose-200', // 已拒绝样式，淡红色
+  result: 'bg-slate-200 text-slate-700 border-slate-300' // 兼容老数据的旧结果样式
 };
 
 /**

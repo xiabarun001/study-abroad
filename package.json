@@ -7,7 +7,7 @@
         "doc": "docs"
     },
     "scripts": {
-        "dev:electron": "wait-on tcp:5173 && cross-env VITE_DEV_SERVER_URL=http://localhost:5173 electron .",
+        "dev:electron": "wait-on tcp:5173 && cross-env VITE_DEV_SERVER_URL=http://localhost:5173 electron . --no-sandbox",
         "dev:vite": "vite",
         "dev": "concurrently \"npm run dev:vite\" \"npm run dev:electron\"",
         "build": "vite build"

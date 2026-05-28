@@ -1,22 +1,36 @@
 import React from 'react';
 
-// 定义申请看板的生命周期各阶段列
+// 定义扩展后的申请看板生命周期各阶段列，增加“补充材料中”、“已获录取 (Offer)”和“已拒绝”
 const STATUS_COLUMNS = [
   { id: 'planning', title: '规划中' },
-  { id: 'preparing', title: '准备材料' },
+  { id: 'preparing', title: '准备材料中' },
+  { id: 'supplement', title: '补充材料中' },
   { id: 'submitted', title: '已提交' },
   { id: 'waiting', title: '面试/等待' },
-  { id: 'result', title: '结果' }
+  { id: 'offer', title: '已获录取 (Offer)' },
+  { id: 'rejected', title: '已拒绝' }
 ];
 
 /**
  * 申请进度看板组件 (Kanban View)
  * 将留学申请按进度状态进行分类展示，支持直接在卡片上修改状态和截止日期。
+ * 支持根据 filter 属性过滤展示的状态列（'all' | 'active' | 'offer'）。
  */
-export function ApplicationKanban({ apps, handleStatusChange, handleDeadlineChange, handleDelete, isUrgent }) {
+export function ApplicationKanban({ apps, filter = 'all', handleStatusChange, handleDeadlineChange, handleDelete, isUrgent }) {
+  // 根据阶段筛选状态（全部、进行中、录取结果）过滤渲染的看板阶段列
+  const filteredColumns = STATUS_COLUMNS.filter(col => {
+    if (filter === 'active') {
+      return ['planning', 'preparing', 'supplement', 'submitted', 'waiting'].includes(col.id);
+    }
+    if (filter === 'offer') {
+      return ['offer', 'rejected'].includes(col.id);
+    }
+    return true; // 默认 'all'
+  });
+
   return (
     <div className="flex gap-6 overflow-x-auto pb-4 h-full">
-      {STATUS_COLUMNS.map(col => (
+      {filteredColumns.map(col => (
         <div key={col.id} className="flex flex-col min-w-[300px] w-[300px] bg-slate-100 rounded-2xl p-4 border border-slate-200">
           <h3 className="font-bold text-slate-700 mb-4 flex justify-between items-center">
             {col.title}

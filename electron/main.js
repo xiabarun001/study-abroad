@@ -6,6 +6,10 @@ const { extractProgramData } = require('./main/scraper');
 const { getAiRecommendation, chatWithAgent } = require('./main/ai_advisor');
 const { createBrowserView, closeBrowserView } = require('./main/webview');
 
+// 【新增代码】仅添加 no-sandbox 命令行参数：禁用沙箱限制以解决在非系统盘（如 E 盘）运行时触发的沙盒权限崩溃问题（错误码 2147483651）
+// 同时启用 GPU 硬件加速，避免 CPU 软渲染导致的界面卡顿与延迟
+app.commandLine.appendSwitch('no-sandbox');
+
 let mainWindowInstance = null; // 缓存主窗口实例，用于 BrowserView 操作
 
 // 数据库连接实例 (遗留本地 SQLite 用途)
@@ -77,9 +81,17 @@ app.whenReady().then(() => {
     return await getAiRecommendation(profile, programs);
   });
 
-  // 与 AI 助手进行对话
-  ipcMain.handle('chat-with-agent', async (event, messages, keys) => {
-    return await chatWithAgent(messages, keys);
+  // 与 AI 助手进行对话，并监听执行进度与字符流发送给渲染进程
+  ipcMain.handle('chat-with-agent', async (event, messages, keys, options) => {
+    // 传入状态更新回调，将主进程的中间工作阶段（思考、联网搜索、数据整理、生成）发回 React
+    const onStatusChange = (status) => {
+      event.sender.send('chat-agent-status', status);
+    };
+    // 传入流式数据回调，向渲染进程发送大模型生成的文本片段
+    const onChunk = (chunk) => {
+      event.sender.send('chat-agent-chunk', chunk);
+    };
+    return await chatWithAgent(messages, keys, onStatusChange, onChunk, options);
   });
 
   // AI 并发爬取各大引擎并筛选留学项目

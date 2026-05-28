@@ -10,6 +10,7 @@ import { FavoritesPage } from './pages/FavoritesPage';
 import { ApplicationsPage } from './pages/ApplicationsPage';
 import { AiAdvisorPage } from './pages/AiAdvisorPage';
 import { DiscoverPage } from './pages/DiscoverPage';
+import { ApplicationHubPage } from './pages/ApplicationHubPage'; // 引入新建的申请中心门户页面
 
 function App() {
   const { i18n } = useTranslation();
@@ -27,13 +28,17 @@ function App() {
       <Routes>
         <Route element={<MainLayout />}>
           <Route path="/" element={<MapPage />} />
-          <Route path="/discover" element={<DiscoverPage />} />
+          {/* 项目大全：改为空 Fragment 占位，由 MainLayout 进行常驻渲染控制显隐 */}
+          <Route path="/discover" element={<></>} />
           <Route path="/continent/:continentId" element={<ContinentPage />} />
           <Route path="/country/:countryId" element={<CountryPage />} />
           <Route path="/university/:id" element={<UniversityPage />} />
+          {/* 申请中心大盘：改为空 Fragment 占位，由 MainLayout 进行常驻渲染控制显隐 */}
+          <Route path="/hub" element={<></>} />
           <Route path="/favorites" element={<FavoritesPage />} />
           <Route path="/applications" element={<ApplicationsPage />} />
-          <Route path="/advisor" element={<AiAdvisorPage />} />
+          {/* AI助手：改为空 Fragment 占位，由 MainLayout 进行常驻渲染控制显隐 */}
+          <Route path="/advisor" element={<></>} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

@@ -84,5 +84,17 @@ export const applicationService = {
         .delete()
         .eq('id', id)
     );
+  },
+
+  /**
+   * 插入或直接导入一条现成的申请记录，带上详细中文注释
+   * @param {Object} applicationObj - 完整的申请记录数据对象
+   */
+  async insertApplication(applicationObj) {
+    return handleResponse(
+      supabase
+        .from('user_applications')
+        .insert([applicationObj])
+    );
   }
 };

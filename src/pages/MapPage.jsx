@@ -5,7 +5,7 @@ export function MapPage() {
   const navigate = useNavigate();
 
   return (
-    <div className="flex flex-col flex-1 w-full h-full min-h-[calc(100vh-4rem)] bg-slate-900 relative overflow-hidden">
+    <div className="flex flex-col flex-1 w-full h-full min-h-screen bg-slate-900 relative overflow-hidden pt-16">
       {/* Dynamic Hero Section */}
       <div className="w-full flex-1 text-white relative flex flex-col justify-center">
         <div className="absolute inset-0 overflow-hidden">
